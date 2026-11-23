@@ -98,7 +98,9 @@ void Append(char* dst, size_t n, const char* add) {
 // Ajuste de palabras por lineas (port de wrapText del simulador). Devuelve el numero de lineas.
 constexpr int kMaxLines = 4;
 constexpr int kLineLen = 96;
+__attribute__((noinline))
 int WrapText(const char* text, float size, float max_w, int max_lines, char lines[][kLineLen]) {
+    if (max_lines > kMaxLines) max_lines = kMaxLines;
     auto fits = [&](const char* s) { return Canvas::TextWidth(s, size) <= max_w; };
     // Quita caracteres del final hasta que "s…" quepa, y agrega los puntos suspensivos
     auto ellipsize = [&](char* s) {
@@ -111,8 +113,12 @@ int WrapText(const char* text, float size, float max_w, int max_lines, char line
         }
         Copy(s, kLineLen, tmp);
     };
-    char all[kMaxLines + 8][kLineLen];
     int total = 0;
+    bool overflow = false;
+    auto push = [&](const char* s) {
+        if (total < max_lines) Copy(lines[total++], kLineLen, s);
+        else overflow = true;
+    };
     char current[kLineLen] = "";
     char word[kLineLen];
     const char* p = text;
@@ -132,23 +138,17 @@ int WrapText(const char* text, float size, float max_w, int max_lines, char line
         if (fits(test)) {
             Copy(current, sizeof(current), test);
         } else {
-            if (current[0] && total < kMaxLines + 8) Copy(all[total++], kLineLen, current);
+            if (current[0]) push(current);
             if (!fits(word)) {
-                char part[kLineLen];
-                Copy(part, sizeof(part), word);
-                ellipsize(part);
-                Copy(current, sizeof(current), part);
+                Copy(current, sizeof(current), word);
+                ellipsize(current);
             } else {
                 Copy(current, sizeof(current), word);
             }
         }
     }
-    if (current[0] && total < kMaxLines + 8) Copy(all[total++], kLineLen, current);
-    if (total > max_lines) {
-        total = max_lines;
-        ellipsize(all[max_lines - 1]);
-    }
-    for (int i = 0; i < total; ++i) Copy(lines[i], kLineLen, all[i]);
+    if (current[0]) push(current);
+    if (overflow && total > 0) ellipsize(lines[total - 1]);
     return total;
 }
 
