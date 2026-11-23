@@ -1,0 +1,17 @@
+{
+    "type": "wk-esp32s3-dev",
+    "target": "esp32s3",
+    "builds": [
+        {
+            "name": "wk-esp32s3-dev"
+        },
+        {
+            "name": "troko-st7735",
+            "sdkconfig_append": [
+                "CONFIG_WK_ESP32S3_DEV_DISPLAY_LCD=y",
+                "CONFIG_LCD_ST7735_128X160=y",
+                "CONFIG_BOARD_NO_MOTOR_CONTROL=y"
+            ]
+        }
+    ]
+}

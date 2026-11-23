@@ -1,0 +1,26 @@
+name: Compilar Troko (ST7735)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  compilar:
+    runs-on: ubuntu-latest
+    container:
+      image: espressif/idf:release-v6.1
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Compilar firmware
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          python scripts/build.py wk-esp32s3-dev --name troko-st7735 \
+            --language es-ES \
+            --custom-wake-word troko --custom-wake-word-display Troko
+
+      - name: Guardar el .bin
+        uses: actions/upload-artifact@v4
+        with:
+          name: troko-st7735-firmware
+          path: build/merged-binary.bin
