@@ -568,8 +568,11 @@ void TimerScene::RenderTimerStage(Canvas& cv, float enter_alpha, double now_sec)
     bool long_fmt = std::strlen(time_text) > 5;
     cv.Text(time_text, 0, 0, long_fmt ? 14.0f : 19.0f, Align::Center,
             paused ? RGB(0xcbd5e1) : (urgent ? RGB(0xfecaca) : kWhite));
-    char pct[8];
-    std::snprintf(pct, sizeof(pct), "%d%%", static_cast<int>(std::lround(ratio * 100)));
+    char pct[16];
+    int pct_value = static_cast<int>(std::lround(ratio * 100));
+    if (pct_value < 0) pct_value = 0;
+    if (pct_value > 100) pct_value = 100;
+    std::snprintf(pct, sizeof(pct), "%d%%", pct_value);
     cv.Text(pct, 0, 15, 7.5f, Align::Center, main_color);
     cv.Restore();
 

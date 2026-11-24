@@ -1019,7 +1019,7 @@ if(CONFIG_BOARD_TYPE_WK_ESP32S3_DEV)
     # Render mas rapido (el proyecto compila con -Os por defecto)
     set_source_files_properties(
         "troko/troko_gfx.cc" "troko/troko_scenes.cc"
-        PROPERTIES COMPILE_OPTIONS "-O2;-ffast-math;-fno-math-errno")
+        PROPERTIES COMPILE_OPTIONS "-O2;-ffast-math;-fno-math-errno;-Wno-error=format-truncation;-Wno-format-truncation")
 endif()
 
 # Select one audio engine for each chip family
