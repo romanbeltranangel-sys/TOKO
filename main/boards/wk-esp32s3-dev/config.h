@@ -28,7 +28,7 @@
 
 
 #ifdef  CONFIG_BOARD_NO_MOTOR_CONTROL  // 没有电机控制功能的版本
-    #define BUILTIN_LED_GPIO        GPIO_NUM_14
+    #define BUILTIN_LED_GPIO        GPIO_NUM_NC   // Troko: LED apagado (cambia a GPIO_NUM_14 para activarlo)
     #define BOOT_BUTTON_GPIO        GPIO_NUM_0
     #define TOUCH_BUTTON_GPIO       GPIO_NUM_NC
     #define VOLUME_UP_BUTTON_GPIO   GPIO_NUM_38

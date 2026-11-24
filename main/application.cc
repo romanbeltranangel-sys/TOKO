@@ -704,6 +704,7 @@ void Application::InitializeProtocol() {
                           glyphs = std::move(glyphs), bpp]() {
                     display->AddTextGlyphs(glyphs, bpp);
                     display->SetChatMessage("user", message.c_str());
+                    display->SetEmotion("thinking");  // Troko: pensando mientras responde
                 });
             }
         } else if (strcmp(type->valuestring, "llm") == 0) {
@@ -1059,7 +1060,7 @@ void Application::HandleStateChangedEvent() {
             break;
         case kDeviceStateConnecting:
             display->SetStatus(Lang::Strings::CONNECTING);
-            display->SetEmotion("neutral");
+            display->SetEmotion("thinking");
             display->SetChatMessage("system", "");
             break;
         case kDeviceStateListening:

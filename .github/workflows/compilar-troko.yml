@@ -21,7 +21,7 @@ jobs:
           idf.py --version
           python scripts/build.py wk-esp32s3-dev --name troko-st7735 \
             --language es-ES \
-            --custom-wake-word troko --custom-wake-word-display Troko
+            --custom-wake-word lolo --custom-wake-word-display Lolo
 
       - name: Guardar el .bin
         uses: actions/upload-artifact@v4

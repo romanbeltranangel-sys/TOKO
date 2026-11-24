@@ -1016,6 +1016,10 @@ if(CONFIG_BOARD_TYPE_WK_ESP32S3_DEV)
         "troko/troko_weather.cc"
         "troko/troko_tools.cc")
     list(APPEND INCLUDE_DIRS "troko")
+    # Render mas rapido (el proyecto compila con -Os por defecto)
+    set_source_files_properties(
+        "troko/troko_gfx.cc" "troko/troko_scenes.cc"
+        PROPERTIES COMPILE_OPTIONS "-O2;-ffast-math;-fno-math-errno")
 endif()
 
 # Select one audio engine for each chip family

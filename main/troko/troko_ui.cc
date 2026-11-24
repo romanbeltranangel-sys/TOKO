@@ -27,7 +27,9 @@ TrokoUi& TrokoUi::GetInstance() {
 bool TrokoUi::EnsureCreated() {
     if (img_) return true;
     fb_ = static_cast<uint16_t*>(heap_caps_malloc(troko::kW * troko::kH * 2, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT));
-    void* mem = heap_caps_malloc(sizeof(troko::Canvas), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+    // El lienzo va en RAM interna (mucho mas rapida que PSRAM); si no cabe, usa PSRAM.
+    void* mem = heap_caps_malloc(sizeof(troko::Canvas), MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
+    if (!mem) mem = heap_caps_malloc(sizeof(troko::Canvas), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
     if (!fb_ || !mem) {
         ESP_LOGE(TAG, "Sin memoria para el overlay");
         if (fb_) heap_caps_free(fb_);
@@ -64,7 +66,7 @@ void TrokoUi::ShowOverlay(Kind kind, uint32_t hold_ms) {
     visible_ = true;
     lv_obj_remove_flag(img_, LV_OBJ_FLAG_HIDDEN);
     lv_obj_move_foreground(img_);
-    lv_timer_set_period(timer_, 40);
+    lv_timer_set_period(timer_, 33);
     lv_timer_resume(timer_);
 }
 

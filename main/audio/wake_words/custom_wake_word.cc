@@ -122,9 +122,17 @@ bool CustomWakeWord::Initialize(AudioCodec* codec, srmodel_list_t* models_list) 
     input_buffer_.reserve(multinet_->get_samp_chunksize(multinet_model_data_));
     esp_mn_commands_clear();
     for (int i = 0; i < commands_.size(); i++) {
-        esp_mn_commands_add(i + 1, commands_[i].command.c_str());
+        auto add_result = esp_mn_commands_add(i + 1, commands_[i].command.c_str());
+        if (add_result != ESP_OK) {
+            ESP_LOGE(TAG, "No se pudo registrar la palabra de activacion '%s'", commands_[i].command.c_str());
+        } else {
+            ESP_LOGI(TAG, "Palabra de activacion registrada: '%s'", commands_[i].command.c_str());
+        }
     }
-    esp_mn_commands_update();
+    auto update_errors = esp_mn_commands_update();
+    if (update_errors != nullptr) {
+        ESP_LOGE(TAG, "MultiNet rechazo alguna palabra de activacion");
+    }
     
     multinet_->print_active_speech_commands(multinet_model_data_);
 #if CONFIG_SEND_WAKE_WORD_DATA

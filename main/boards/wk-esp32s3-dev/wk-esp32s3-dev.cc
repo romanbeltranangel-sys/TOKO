@@ -303,6 +303,10 @@ public:
     }
 
     virtual Led* GetLed() override {
+        if (BUILTIN_LED_GPIO == GPIO_NUM_NC) {
+            static NoLed no_led;  // Troko: sin LED
+            return &no_led;
+        }
         static SingleLed led(BUILTIN_LED_GPIO);
         return &led;
     }
